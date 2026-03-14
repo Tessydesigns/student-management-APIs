@@ -25,12 +25,45 @@ app.get("/", (req, res) => {
 });
  
 
+
+
+// Get all students + filter with query params
+app.get("/students", (req, res) => {
+  let results = [...mockStudents];
+  const { username, course, module } = req.query;
+
+  if (username) {
+    results = results.filter(student =>
+      student.username.toLowerCase().includes(username.toLowerCase())
+    );
+  }
+
+  if (course) {
+    results = results.filter(student =>
+      student.course.toLowerCase().includes(course.toLowerCase())
+    );
+  }
+
+  if (module) {
+    results = results.filter(student =>
+      student.module.toLowerCase() === module.toLowerCase()
+    );
+  }
+
+  res.status(200).json({
+    message: "Students retrieved successfully",
+    count: results.length,
+    data: results
+  });
+});
+
 app.get("/students", (req, res) => {
   res.status(200).json({
     message: "All students fetched successfully",
     data: mockStudents
   });
 });
+
 
 // GET one student by id
 app.get("/students/:id", (req, res) => {
@@ -149,6 +182,7 @@ app.delete("/students/:id", (req, res) => {
     data: deletedStudent
   });
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

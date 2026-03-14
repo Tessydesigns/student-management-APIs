@@ -1,15 +1,11 @@
-<h2>Student API - PATCH</h2>
+<h2>Student API - Get With Query and Filter  </h2>
 
 <h3> Description</h3>
 
-<p>This branch contains the DELETE API for the student management application.</p>
-<P>The API removes a student from the mockStudents array using the student ID.</P>
+<p>This feature allows users to retrieve students from the `mockStudents` array using query parameters.</p>
+<P>The API supports filtering students by:</p>
+<p>username</p>
+<p>course</p>
+<p>module</p>
 
-
-<h3>Features</h3>
-
-<p> Delete a student by ID</p>
-
-<h3> Route</h3>
-
-<p>Deletes a student record from the mockstudents array. run https://localhost:300/students/ the id of student you want to delete and click on "send"</p>
+<p>Query parameters allow flexible searching without modifying the API route.</p>
