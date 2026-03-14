@@ -1,10 +1,10 @@
-<h2>Student API - POST</h2>
+<h2>Student API - Put</h2>
 
 <h3> Description</h3>
 
-<p>This branch contains the POST API for the student management application.</p><u></u>
+<p>This branch contains the POST API for the student management application.</p>
 
-<p>The API allows a new student to be added to the `mockStudents` array.</p><u></u>
+<p>The API allows a new student to be added to the `mockStudents` array.</p>
 
 <h3>Features</h3>
 - Create a new student
