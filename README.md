@@ -1,4 +1,4 @@
-<h2>Student API - PATCH</h2>
+<h2>Student API - DELETE</h2>
 
 <h3> Description</h3>
 
