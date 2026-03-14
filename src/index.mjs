@@ -109,6 +109,29 @@ app.put("/students/:id", (req, res) => {
   });
 });
 
+// Update part of a student's details
+app.patch("/students/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const student = mockStudents.find((s) => s.id === id);
+
+  if (!student) {
+    return res.status(404).json({
+      message: "Student not found"
+    });
+  }
+
+  const { username, course, module } = req.body || {};
+
+  if (username !== undefined) student.username = username;
+  if (course !== undefined) student.course = course;
+  if (module !== undefined) student.module = module;
+
+  res.status(200).json({
+    message: "Student updated successfully",
+    data: student
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
