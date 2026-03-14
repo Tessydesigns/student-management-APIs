@@ -76,16 +76,21 @@ app.post("/students", (req, res) => {
   });
 });
 
-// PUT replace student
-router.put("/:id", validateId, validateStudent, (req, res) => {
+// Replace all details of a student
+app.put("/students/:id", (req, res) => {
   const id = Number(req.params.id);
-  const { username, course, module } = req.body;
-
+  const { username, course, module } = req.body || {};
   const studentIndex = mockStudents.findIndex((s) => s.id === id);
 
   if (studentIndex === -1) {
     return res.status(404).json({
       message: "Student not found"
+    });
+  }
+
+  if (!username || !course || !module) {
+    return res.status(400).json({
+      message: "username, course and module are required"
     });
   }
 
@@ -103,6 +108,7 @@ router.put("/:id", validateId, validateStudent, (req, res) => {
     data: updatedStudent
   });
 });
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
