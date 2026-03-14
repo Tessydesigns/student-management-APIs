@@ -1,18 +1,16 @@
-<h2>Student API - GET</h2>
+<h2>Student API - POST</h2>
 
-<p>This branch contains the GET APIs for the student management application.</p>
+<h3> Description</h3>
 
-<p>The API uses an in-memory `mockStudents` array to return student data.</p><u></u>
+<p>This branch contains the POST API for the student management application.</p><u></u>
 
- <h2> Features</h2>
+<p>The API allows a new student to be added to the `mockStudents` array.</p><u></u>
 
- <p>GET all students</p>
- <p>GET one student by ID</p><u></u>
+<h3>Features</h3>
+- Create a new student
 
-<h2>Routes</h2>
+<h3>Route</h3>
 
-### 1. Get all students
-**Request**
-```http
-GET /students
+<p>Create a new student by inputing the username, course, module in the body using thuder client</P>
 
+<p>search  using http://localhost:3000/students to view all the student including the the student that was formed will apperar in the list</p>

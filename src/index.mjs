@@ -47,6 +47,34 @@ app.get("/students/:id", (req, res) => {
   });
 });
 
+// Create a new student
+app.post("/students", (req, res) => {
+  const { username, course, module } = req.body || {};
+
+  if (!username || !course || !module) {
+    return res.status(400).json({
+      message: "username, course and module are required"
+    });
+  }
+
+  const maxId = mockStudents.length > 0
+    ? Math.max(...mockStudents.map((student) => student.id))
+    : 0;
+
+  const newStudent = {
+    id: maxId + 1,
+    username,
+    course,
+    module
+  };
+
+  mockStudents.push(newStudent);
+
+  res.status(201).json({
+    message: "Student created successfully",
+    data: newStudent
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
