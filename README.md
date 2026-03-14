@@ -1,16 +1,13 @@
-<h2>Student API - POST</h2>
+<h2>Student API - PUT</h2>
 
 <h3> Description</h3>
 
-<p>This branch contains the POST API for the student management application.</p>
-
-<p>The API allows a new student to be added to the `mockStudents` array.</p>
+<p>This branch contains the PuT API for the student management application.</p>
+<p>The API replaces all details of an existing student.</p>
 
 <h3>Features</h3>
-- Create a new student
 
-<h3>Route</h3>
+<p>Fully update a student record</p>
 
-<p>Create a new student by inputing the username, course, module in the body using thunder client</P>
-
-<p>search  using http://localhost:3000/students to view all the student including the the student that was formed will apperar in the list</p>
+<h3> Route</h3>
+<p>replace a student by ID by inputing the updated version in the body using thunder client. run https://localhost:300/students/ the id number of student you want to update and press "send"</p>

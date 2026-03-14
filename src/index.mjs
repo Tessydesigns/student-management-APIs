@@ -76,6 +76,33 @@ app.post("/students", (req, res) => {
   });
 });
 
+// PUT replace student
+router.put("/:id", validateId, validateStudent, (req, res) => {
+  const id = Number(req.params.id);
+  const { username, course, module } = req.body;
+
+  const studentIndex = mockStudents.findIndex((s) => s.id === id);
+
+  if (studentIndex === -1) {
+    return res.status(404).json({
+      message: "Student not found"
+    });
+  }
+
+  const updatedStudent = {
+    id,
+    username,
+    course,
+    module
+  };
+
+  mockStudents[studentIndex] = updatedStudent;
+
+  res.status(200).json({
+    message: "Student replaced successfully",
+    data: updatedStudent
+  });
+});
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
