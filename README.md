@@ -1,4 +1,4 @@
-<h2>Student API - Put</h2>
+<h2>Student API - POST</h2>
 
 <h3> Description</h3>
 
