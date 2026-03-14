@@ -27,10 +27,10 @@ app.get("/", (req, res) => {
 
 
 
-// Get all students + filter with query params
+// Get all students + query with filter +sorting
 app.get("/students", (req, res) => {
   let results = [...mockStudents];
-  const { username, course, module } = req.query;
+  const { username, course, module, sortBy, order } = req.query;
 
   if (username) {
     results = results.filter(student =>
@@ -50,20 +50,36 @@ app.get("/students", (req, res) => {
     );
   }
 
+  const allowedFields = ["id", "username", "course", "module"];
+
+  if (sortBy) {
+    if (!allowedFields.includes(sortBy)) {
+      return res.status(400).json({
+        message: `sortBy must be one of: ${allowedFields.join(", ")}`
+      });
+    }
+
+    const sortOrder = order === "desc" ? "desc" : "asc";
+
+    results.sort((a, b) => {
+      let valueA = a[sortBy];
+      let valueB = b[sortBy];
+
+      if (typeof valueA === "string") valueA = valueA.toLowerCase();
+      if (typeof valueB === "string") valueB = valueB.toLowerCase();
+
+      if (valueA < valueB) return sortOrder === "asc" ? -1 : 1;
+      if (valueA > valueB) return sortOrder === "asc" ? 1 : -1;
+      return 0;
+    });
+  }
+
   res.status(200).json({
     message: "Students retrieved successfully",
     count: results.length,
     data: results
   });
 });
-
-app.get("/students", (req, res) => {
-  res.status(200).json({
-    message: "All students fetched successfully",
-    data: mockStudents
-  });
-});
-
 
 // GET one student by id
 app.get("/students/:id", (req, res) => {
