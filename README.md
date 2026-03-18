@@ -9,7 +9,7 @@
 
 <h2>What is Middleware</h2>
 
-<p>Middleware is a function with this structure:</p>
+<p>Middleware is a function with this structure:</p>.
 
 ```js
 (req, res, next) => {
