@@ -1,5 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import validateStudentId from "./middleware/validateId.mjs";
+import validateStudent from "./middleware/validateStudent.mjs";
+import logger from "./middleware/logger.mjs";
+import validatePatchStudent from "./middleware/validatePatchStudent.mjs";
 
 dotenv.config();
 
@@ -7,6 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(logger);
 
 let mockStudents = [
   { id: 1, username: "jburns", course: "information technology", module: "A001" },
@@ -19,15 +24,11 @@ let mockStudents = [
   { id: 8, username: "sfraser", course: "art", module: "A611" }
 ];
 
-
 app.get("/", (req, res) => {
   res.send("Student API is working");
 });
- 
 
-
-
-// Get all students + query with filter +sorting
+// Get all students + query with filter + sorting
 app.get("/students", (req, res) => {
   let results = [...mockStudents];
   const { username, course, module, sortBy, order } = req.query;
@@ -82,9 +83,8 @@ app.get("/students", (req, res) => {
 });
 
 // GET one student by id
-app.get("/students/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const student = mockStudents.find((s) => s.id === id);
+app.get("/students/:id", validateStudentId, (req, res) => {
+  const student = mockStudents.find((s) => s.id === req.studentId);
 
   if (!student) {
     return res.status(404).json({ message: "Student not found" });
@@ -97,14 +97,8 @@ app.get("/students/:id", (req, res) => {
 });
 
 // Create a new student
-app.post("/students", (req, res) => {
-  const { username, course, module } = req.body || {};
-
-  if (!username || !course || !module) {
-    return res.status(400).json({
-      message: "username, course and module are required"
-    });
-  }
+app.post("/students", validateStudent, (req, res) => {
+  const { username, course, module } = req.body;
 
   const maxId = mockStudents.length > 0
     ? Math.max(...mockStudents.map((student) => student.id))
@@ -126,10 +120,9 @@ app.post("/students", (req, res) => {
 });
 
 // Replace all details of a student
-app.put("/students/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const { username, course, module } = req.body || {};
-  const studentIndex = mockStudents.findIndex((s) => s.id === id);
+app.put("/students/:id", validateStudentId, validateStudent, (req, res) => {
+  const { username, course, module } = req.body;
+  const studentIndex = mockStudents.findIndex((s) => s.id === req.studentId);
 
   if (studentIndex === -1) {
     return res.status(404).json({
@@ -137,14 +130,8 @@ app.put("/students/:id", (req, res) => {
     });
   }
 
-  if (!username || !course || !module) {
-    return res.status(400).json({
-      message: "username, course and module are required"
-    });
-  }
-
   const updatedStudent = {
-    id,
+    id: req.studentId,
     username,
     course,
     module
@@ -158,10 +145,8 @@ app.put("/students/:id", (req, res) => {
   });
 });
 
-// Update part of a student's details
-app.patch("/students/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const student = mockStudents.find((s) => s.id === id);
+app.patch("/students/:id", validateStudentId, validatePatchStudent, (req, res) => {
+  const student = mockStudents.find((s) => s.id === req.studentId);
 
   if (!student) {
     return res.status(404).json({
@@ -181,9 +166,8 @@ app.patch("/students/:id", (req, res) => {
   });
 });
 
-app.delete("/students/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const studentIndex = mockStudents.findIndex((s) => s.id === id);
+app.delete("/students/:id", validateStudentId, (req, res) => {
+  const studentIndex = mockStudents.findIndex((s) => s.id === req.studentId);
 
   if (studentIndex === -1) {
     return res.status(404).json({
@@ -198,7 +182,6 @@ app.delete("/students/:id", (req, res) => {
     data: deletedStudent
   });
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
