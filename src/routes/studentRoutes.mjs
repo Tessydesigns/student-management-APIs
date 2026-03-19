@@ -2,9 +2,11 @@ import express from "express";
 import validateStudentId from "../../middleware/validateId.mjs";
 import validateStudent from "../../middleware/validateStudent.mjs";
 import validatePatchStudent from "../../middleware/validatePatchStudent.mjs";
+import authMiddleware from "../../middleware/auth.mjs";
 
 const router = express.Router();
 
+router.use(authMiddleware);
 let mockStudents = [
   { id: 1, username: "jburns", course: "information technology", module: "A001" },
   { id: 2, username: "rsmith", course: "political sciences", module: "C001" },

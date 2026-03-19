@@ -1,49 +1,149 @@
-<h2>Student API - Routing structure</h2>  
+<h2>Student Management API</h2>
 
+<p>Description</p>
 
-<h3>Description</h3>
+<p>This project is a RESTful API built using <bold>Node.js</bold> and <bold>Express.js</bold>. It allows users to manage student records through standard CRUD operations.</p>
 
-<p>This project uses <em>structured routing</em> to organize API endpoints in a modular and maintainable way.</p>
+<h3>The API includes:</h3>
 
-<p>Instead of defining all routes inside the main server file <em>index.mjs</em>, routes are separated into a dedicated file:
+* Filtering and sorting
+* Middleware for logging and validation
+* Structured routing
+* JWT-based authentication
+
+<p>This project demonstrates a clean and modular backend architecture following real-world best practices.</p>
+
+<h3>Features</h3>
+
+* CRUD operations (Create, Read, Update, Delete)
+* Filtering by username, course, and module
+* Sorting results (ascending and descending)
+* Middleware for logging and validation
+* Structured routing using Express Router
+* JWT authentication for protected routes
+
 <u></u>
 
-<h3>src/routes/studentRoutes.mjs</h3>
+## Project Structure
 
-<p>This approach keeps the codebase clean and scalable as the application grows.</p>
-
-
-<h3>ow Routing Works</p>
-
-<p>The main server file connects the routes using:</p>
-
-<p>in index.mjs input:
-app.use("/students", studentRoutes);</p>
-
-<p>This means that all routes defined inside `studentRoutes.mjs` are automatically prefixed with `/students`.</p>
-
-
-### Route Mapping Example
-
-Inside `studentRoutes.mjs`:
-
-```js
-router.get("/");
+```
+student-management-APIs
+│
+├── middleware/
+│   ├── logger.mjs
+│   ├── validateId.mjs
+│   ├── validateStudent.mjs
+│   ├── validatePatchStudent.mjs
+│   └── auth.mjs
+│
+└── src/
+    ├── index.mjs
+    └── routes/
+        ├── studentRoutes.mjs
+        └── authRoutes.mjs
 ```
 
-Becomes:
+---
+
+## Installation
+
+1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+```
+
+2. Navigate into the project
+
+```bash
+cd student-management-APIs
+```
+
+3. Install dependencies
+
+```bash
+npm install
+```
+
+4. Create a `.env` file
+
+```env
+PORT=3000
+JWT_SECRET=mysecretkey
+```
+
+5. Start the server
+
+```bash
+npm run dev
+```
+
+---
+
+## API Base URL
+
+```
+http://localhost:3000
+```
+
+---
+
+## Authentication (JWT)
+
+### Login
+
+```
+POST /auth/login
+```
+
+Body:
+
+```json
+{
+  "username": "admin"
+}
+```
+
+Response:
+
+```json
+{
+  "message": "Login successful",
+  "token": "your_jwt_token"
+}
+```
+
+---
+
+### Using the Token
+
+Protected routes require a JWT token in the request headers:
+
+```
+Authorization: Bearer <token>
+```
+
+---
+
+## API Endpoints
+
+### Get all students
 
 ```
 GET /students
 ```
 
+Optional query parameters:
+
+* `username`
+* `course`
+* `module`
+* `sortBy`
+* `order` (asc or desc)
+
 ---
 
-```js
-router.get("/:id");
-```
-
-Becomes:
+### Get student by ID
 
 ```
 GET /students/:id
@@ -51,52 +151,203 @@ GET /students/:id
 
 ---
 
-### Route Definitions
+### Create student (Protected)
 
-All student-related endpoints are grouped inside a single router using Express:
-
-```js
-import express from "express";
-const router = express.Router();
+```
+POST /students
 ```
 
-The following routes are implemented:
+---
 
-* `GET /students` → Retrieve all students (with filtering and sorting)
-* `GET /students/:id` → Retrieve a specific student by ID
-* `POST /students` → Create a new student
-* `PUT /students/:id` → Replace an existing student
-* `PATCH /students/:id` → Update part of a student
-* `DELETE /students/:id` → Delete a student
+### Replace student (Protected)
+
+```
+PUT /students/:id
+```
 
 ---
 
-### Benefits of Structured Routing
+### Update student (Protected)
 
-* Keeps the main server file (`index.mjs`) clean and focused
-* Groups related routes together
-* Improves code readability
-* Makes the application easier to maintain
-* Allows easy expansion (e.g., adding more route files)
-* Follows best practices used in real-world backend development
+```
+PATCH /students/:id
+```
 
 ---
 
-### Request Flow
+### Delete student (Protected)
 
-The routing structure works together with middleware and validation in the following flow:
+```
+DELETE /students/:id
+```
+
+---
+
+## Middleware
+
+### Logger Middleware
+
+Logs all incoming requests:
+
+```js
+console.log(`${req.method} ${req.url}`);
+```
+
+---
+
+### Validation Middleware
+
+#### validateStudentId
+
+* Ensures ID is a valid number
+* Prevents invalid route parameters
+
+#### validateStudent
+
+* Ensures all required fields exist
+* Used in POST and PUT
+
+#### validatePatchStudent
+
+* Ensures at least one field is provided
+* Used in PATCH
+
+---
+
+### Authentication Middleware (JWT)
+
+* Verifies JWT tokens
+* Blocks unauthorized requests
+* Attaches decoded user to `req.user`
+
+---
+
+## Routing Structure
+
+Routes are organized using Express Router:
+
+```
+src/routes/studentRoutes.mjs
+src/routes/authRoutes.mjs
+```
+
+Main server file:
+
+```js
+app.use("/students", studentRoutes);
+app.use("/auth", authRoutes);
+```
+
+---
+
+## Request Flow
 
 ```
 Request
-→ index.mjs
-→ studentRoutes.mjs
-→ middleware (logger / validation)
-→ route handler
-→ response
+→ Logger Middleware
+→ Authentication Middleware (JWT)
+→ Validation Middleware
+→ Route Handler
+→ Response
 ```
 
 ---
 
-### Summary
+## Testing
 
-The routing structure in this project separates concerns by moving route definitions into a dedicated file. This improves organization, maintainability, and scalability while following professional backend development practices.
+The API was tested using **Thunder Client**.
+
+### JWT Testing Flow
+
+1. Login to get token:
+
+```
+POST /auth/login
+```
+
+2. Copy the token
+
+3. Use in headers:
+
+```
+Authorization: Bearer <token>
+```
+
+4. Test protected routes
+
+---
+
+## Example Errors
+
+### No Token
+
+```json
+{
+  "message": "No token provided"
+}
+```
+
+---
+
+### Invalid Token
+
+```json
+{
+  "message": "Invalid token"
+}
+```
+
+---
+
+### Invalid ID
+
+```json
+{
+  "message": "Invalid student id"
+}
+```
+
+---
+
+### Validation Error
+
+```json
+{
+  "message": "username, course and module must be non-empty strings"
+}
+```
+
+---
+
+## Tools Used
+
+* Node.js
+* Express.js
+* dotenv
+* jsonwebtoken
+* Nodemon
+* Thunder Client
+
+---
+
+## Summary
+
+This project demonstrates:
+
+* Building a RESTful API
+* Implementing middleware and validation
+* Structuring routes using Express Router
+* Securing endpoints using JWT authentication
+* Testing endpoints using Thunder Client
+
+---
+
+## Future Improvements
+
+* Connect to a database (MongoDB / SQL)
+* Add user registration and password hashing
+* Implement role-based access control
+* Add refresh tokens
+* Use MVC architecture
+
+---
