@@ -1,21 +1,45 @@
 import express from "express";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import Student from "../models/Student.mjs";
 
 const router = express.Router();
 
-// simple login (mock user)
-router.post("/login", (req, res) => {
-  const { username } = req.body;
+// mock user (with hashed password)
+const mockUser = {
+  username: "TessyT",
+  password: bcrypt.hashSync("BabyT123", 10) // hashed version
+};
 
-  if (!username) {
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  // check if both fields exist
+  if (!username || !password) {
     return res.status(400).json({
-      message: "Username is required"
+      message: "Username and password are required"
+    });
+  }
+
+  // check username first
+  if (username !== mockUser.username) {
+    return res.status(401).json({
+      message: "Invalid username or password"
+    });
+  }
+
+  // compare password with hashed password
+  const isMatch = await bcrypt.compare(password, mockUser.password);
+
+  if (!isMatch) {
+    return res.status(401).json({
+      message: "Invalid username or password"
     });
   }
 
   // create token
   const token = jwt.sign(
-    { username },
+    { username: mockUser.username },
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );

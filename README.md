@@ -342,9 +342,95 @@ This project demonstrates:
 
 ---
 
-## Future Improvements
+## MongoDB Integration
 
-* Connect to a database (MongoDB / SQL)
+This project uses **MongoDB** with **Mongoose** to store and manage data persistently instead of using in-memory arrays.
+
+---
+
+## Key Points
+
+* MongoDB stores student and user data permanently
+* Mongoose is used to define schemas and interact with the database
+* Data now persists even after server restarts
+
+---
+
+## Configuration
+
+MongoDB connection is set in the `.env` file:
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/studentDB
+```
+
+Connection is handled in:
+
+```
+src/config/db.mjs
+```
+
+and initialized in `index.mjs` using:
+
+```js
+connectDB();
+```
+
+---
+
+## Models
+
+* **Student Model** → stores student records
+* **User Model** → stores authentication data
+
+---
+
+## CRUD Operations
+
+All routes now interact with MongoDB:
+
+* Create → `Student.create()`
+* Read → `Student.find()`
+* Update → `Student.findByIdAndUpdate()`
+* Delete → `Student.findByIdAndDelete()`
+
+---
+
+## Authentication
+
+* Users are stored in MongoDB
+* Passwords are hashed using bcrypt
+* Login verifies credentials and returns a JWT token
+
+---
+
+## ID Handling
+
+MongoDB uses **ObjectId** instead of numeric IDs:
+
+```text
+67d9f1c2a8b3...
+```
+
+Validation ensures IDs are valid before database operations.
+
+---
+
+## Benefits
+
+* Persistent storage
+* Scalable architecture
+* Secure authentication
+* Real-world backend structure
+
+---
+
+## Summary
+
+MongoDB transforms the project from a basic API into a **fully functional backend system** with persistent data and secure user authentication.
+
+
+## Future Improvements
 * Add user registration and password hashing
 * Implement role-based access control
 * Add refresh tokens
