@@ -1,4 +1,4 @@
-# Student Management API (Summary)
+# Student Management API
 
 ## Overview
 
